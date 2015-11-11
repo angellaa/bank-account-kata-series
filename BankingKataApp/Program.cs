@@ -1,4 +1,4 @@
-﻿using System;
+﻿using BankingKata;
 
 namespace BankingKataApp
 {
@@ -6,7 +6,9 @@ namespace BankingKataApp
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello");
+            var account = new Account();
+
+            account.PrintBalance(new ConsolePrinter());
         }
     }
 }
