@@ -6,20 +6,22 @@ namespace BankingKataApp
 {
     class Program
     {
-        static readonly Dictionary<char, Action<AccountWithOverdraft, ConsolePrinter>> s_MenuOptions = new Dictionary<char, Action<AccountWithOverdraft, ConsolePrinter>>
+        private static readonly Dictionary<char, Action<ConsolePrinter>> MenuOptions = new Dictionary<char, Action<ConsolePrinter>>
         {
             { '1', MakeDeposit },
             { '2', MakeWithdrawal },
             { '3', PrintLastTransaction }
         };
 
+        private static AccountWithOverdraft m_Account;
+
         static void Main(string[] args)
         {
-            var account = SetupAccount();
+            SetupAccount();
             var consolePrinter = new ConsolePrinter();
 
             Console.WriteLine("Welcome to your account. \n");
-            account.PrintBalance(consolePrinter);
+            m_Account.PrintBalance(consolePrinter);
 
             while (true)
             {
@@ -27,7 +29,7 @@ namespace BankingKataApp
 
                 var userOption = GetUserOption();
 
-                s_MenuOptions[userOption.KeyChar].Invoke(account, consolePrinter);
+                MenuOptions[userOption.KeyChar].Invoke(consolePrinter);
             }
         }
 
@@ -37,34 +39,34 @@ namespace BankingKataApp
             return userOption;
         }
 
-        private static void PrintLastTransaction(AccountWithOverdraft account, ConsolePrinter consolePrinter)
+        private static void PrintLastTransaction(ConsolePrinter consolePrinter)
         {
             Console.WriteLine();
             Console.WriteLine();
 
-            account.PrintLastTransaction(consolePrinter);
+            m_Account.PrintLastTransaction(consolePrinter);
         }
 
-        private static void MakeWithdrawal(AccountWithOverdraft account, ConsolePrinter consolePrinter)
+        private static void MakeWithdrawal(ConsolePrinter consolePrinter)
         {
             Console.WriteLine("\n\nEnter an amount to withdraw in pounds:");
             var amountToWithdraw = Console.ReadLine();
 
-            account.Withdraw(new ATMDebitEntry(DateTime.Now, new Money(decimal.Parse(amountToWithdraw))));
+            m_Account.Withdraw(new ATMDebitEntry(DateTime.Now, new Money(decimal.Parse(amountToWithdraw))));
 
             Console.WriteLine();
-            account.PrintBalance(consolePrinter);
+            m_Account.PrintBalance(consolePrinter);
         }
 
-        private static void MakeDeposit(AccountWithOverdraft account, ConsolePrinter consolePrinter)
+        private static void MakeDeposit(ConsolePrinter consolePrinter)
         {
             Console.WriteLine("\n\nEnter an amount to deposit in pounds:");
             var amountToDeposit = Console.ReadLine();
 
-            account.Deposit(DateTime.Now, new Money(decimal.Parse(amountToDeposit)));
+            m_Account.Deposit(DateTime.Now, new Money(decimal.Parse(amountToDeposit)));
 
             Console.WriteLine();
-            account.PrintBalance(consolePrinter);
+            m_Account.PrintBalance(consolePrinter);
         }
 
         private static void PrintMenu()
@@ -78,13 +80,12 @@ Press a key to choose an option:
             ");
         }
 
-        private static AccountWithOverdraft SetupAccount()
+        private static void SetupAccount()
         {
             var account = new Account();
             account.Deposit(DateTime.Now, new Money(1000m));
 
-            var accountWithOverdraft = new AccountWithOverdraft(account, new ArrangedOverdraft(new Money(-1500m), new Money(10m)));
-            return accountWithOverdraft;
+            m_Account = new AccountWithOverdraft(account, new ArrangedOverdraft(new Money(-1500m), new Money(10m)));
         }
     }
 }
