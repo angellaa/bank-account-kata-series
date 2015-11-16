@@ -16,12 +16,12 @@ namespace BankingKataApp
         private static AccountWithOverdraft m_Account;
         private static readonly ConsolePrinter m_Printer = new ConsolePrinter();
 
-        static void Main(string[] args)
+        public static void Main()
         {
             SetupAccount();
 
-            Console.WriteLine("Welcome to your account. \n");
-            m_Account.PrintBalance(m_Printer);
+            PrintWelcomeMessage();
+            PrintBalance();
 
             while (true)
             {
@@ -29,8 +29,23 @@ namespace BankingKataApp
 
                 var userOption = GetUserOption();
 
-                MenuOptions[userOption.KeyChar].Invoke();
+                ExecuteOption(userOption);
             }
+        }
+
+        private static void PrintBalance()
+        {
+            m_Account.PrintBalance(m_Printer);
+        }
+
+        private static void PrintWelcomeMessage()
+        {
+            Console.WriteLine("Welcome to your account. \n");
+        }
+
+        private static void ExecuteOption(ConsoleKeyInfo userOption)
+        {
+            MenuOptions[userOption.KeyChar].Invoke();
         }
 
         private static ConsoleKeyInfo GetUserOption()
