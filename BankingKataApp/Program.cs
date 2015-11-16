@@ -76,7 +76,14 @@ namespace BankingKataApp
             Console.WriteLine("\n\nEnter an amount to withdraw in pounds:");
             var amountToWithdraw = Console.ReadLine();
 
-            m_Account.Withdraw(new ATMDebitEntry(DateTime.Now, new Money(decimal.Parse(amountToWithdraw))));
+            try
+            {
+                m_Account.Withdraw(new ATMDebitEntry(DateTime.Now, new Money(decimal.Parse(amountToWithdraw))));
+            }
+            catch (Exception)
+            {
+                Console.WriteLine("Withdrawal declined. You have been charged for this :) Thanks");
+            }
 
             Console.WriteLine();
             m_Account.PrintBalance(m_Printer);
@@ -109,7 +116,7 @@ Press a key to choose an option:
             var account = new Account();
             account.Deposit(DateTime.Now, new Money(1000m));
 
-            m_Account = new AccountWithOverdraft(account, new ArrangedOverdraft(new Money(-1500m), new Money(10m)));
+            m_Account = new AccountWithOverdraft(account, new KataOverdraft());
         }
     }
 }
