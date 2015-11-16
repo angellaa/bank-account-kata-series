@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using BankingKata;
 
 namespace BankingKataApp
@@ -29,8 +30,13 @@ namespace BankingKataApp
 
                 var userOption = GetUserOption();
 
-                ExecuteOption(userOption);
+                ExecuteOption(userOption);                    
             }
+        }
+
+        private static bool IsValidOption(ConsoleKeyInfo userOption)
+        {
+            return MenuOptions.Keys.Any(x => x == userOption.KeyChar);
         }
 
         private static void PrintBalance()
@@ -45,7 +51,10 @@ namespace BankingKataApp
 
         private static void ExecuteOption(ConsoleKeyInfo userOption)
         {
-            MenuOptions[userOption.KeyChar].Invoke();
+            if (IsValidOption(userOption))
+            {
+                MenuOptions[userOption.KeyChar].Invoke();
+            }
         }
 
         private static ConsoleKeyInfo GetUserOption()
