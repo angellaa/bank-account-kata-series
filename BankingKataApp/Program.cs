@@ -6,7 +6,7 @@ namespace BankingKataApp
 {
     class Program
     {
-        private static readonly Dictionary<char, Action<ConsolePrinter>> MenuOptions = new Dictionary<char, Action<ConsolePrinter>>
+        private static readonly Dictionary<char, Action> MenuOptions = new Dictionary<char, Action>
         {
             { '1', MakeDeposit },
             { '2', MakeWithdrawal },
@@ -14,14 +14,14 @@ namespace BankingKataApp
         };
 
         private static AccountWithOverdraft m_Account;
+        private static readonly ConsolePrinter m_Printer = new ConsolePrinter();
 
         static void Main(string[] args)
         {
             SetupAccount();
-            var consolePrinter = new ConsolePrinter();
 
             Console.WriteLine("Welcome to your account. \n");
-            m_Account.PrintBalance(consolePrinter);
+            m_Account.PrintBalance(m_Printer);
 
             while (true)
             {
@@ -29,7 +29,7 @@ namespace BankingKataApp
 
                 var userOption = GetUserOption();
 
-                MenuOptions[userOption.KeyChar].Invoke(consolePrinter);
+                MenuOptions[userOption.KeyChar].Invoke();
             }
         }
 
@@ -39,15 +39,15 @@ namespace BankingKataApp
             return userOption;
         }
 
-        private static void PrintLastTransaction(ConsolePrinter consolePrinter)
+        private static void PrintLastTransaction()
         {
             Console.WriteLine();
             Console.WriteLine();
 
-            m_Account.PrintLastTransaction(consolePrinter);
+            m_Account.PrintLastTransaction(m_Printer);
         }
 
-        private static void MakeWithdrawal(ConsolePrinter consolePrinter)
+        private static void MakeWithdrawal()
         {
             Console.WriteLine("\n\nEnter an amount to withdraw in pounds:");
             var amountToWithdraw = Console.ReadLine();
@@ -55,10 +55,10 @@ namespace BankingKataApp
             m_Account.Withdraw(new ATMDebitEntry(DateTime.Now, new Money(decimal.Parse(amountToWithdraw))));
 
             Console.WriteLine();
-            m_Account.PrintBalance(consolePrinter);
+            m_Account.PrintBalance(m_Printer);
         }
 
-        private static void MakeDeposit(ConsolePrinter consolePrinter)
+        private static void MakeDeposit()
         {
             Console.WriteLine("\n\nEnter an amount to deposit in pounds:");
             var amountToDeposit = Console.ReadLine();
@@ -66,7 +66,7 @@ namespace BankingKataApp
             m_Account.Deposit(DateTime.Now, new Money(decimal.Parse(amountToDeposit)));
 
             Console.WriteLine();
-            m_Account.PrintBalance(consolePrinter);
+            m_Account.PrintBalance(m_Printer);
         }
 
         private static void PrintMenu()
